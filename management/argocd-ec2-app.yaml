@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: ec2-cluster
+  name: capi-dev1
 spec:
   destination:
     name: ''

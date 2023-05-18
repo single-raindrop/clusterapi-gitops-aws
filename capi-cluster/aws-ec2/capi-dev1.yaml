@@ -1,7 +1,7 @@
 apiVersion: cluster.x-k8s.io/v1beta1
 kind: Cluster
 metadata:
-  name: capi-ec2
+  name: capi-dev1
   namespace: default
 spec:
   clusterNetwork:
@@ -11,25 +11,27 @@ spec:
   controlPlaneRef:
     apiVersion: controlplane.cluster.x-k8s.io/v1beta1
     kind: KubeadmControlPlane
-    name: capi-ec2-control-plane
+    name: capi-dev1-control-plane
   infrastructureRef:
-    apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+    apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
     kind: AWSCluster
-    name: capi-ec2
+    name: capi-dev1
 ---
-apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
 kind: AWSCluster
 metadata:
-  name: capi-ec2
+  name: capi-dev1
   namespace: default
 spec:
-  region: us-east-1
-  sshKeyName: capi-ec2
+  region: ap-northeast-1
+  sshKeyName: capi-chase1
+#  bastion:
+#    enabled: true
 ---
 apiVersion: controlplane.cluster.x-k8s.io/v1beta1
 kind: KubeadmControlPlane
 metadata:
-  name: capi-ec2-control-plane
+  name: capi-dev1-control-plane
   namespace: default
 spec:
   kubeadmConfigSpec:
@@ -52,32 +54,32 @@ spec:
         name: '{{ ds.meta_data.local_hostname }}'
   machineTemplate:
     infrastructureRef:
-      apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+      apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
       kind: AWSMachineTemplate
-      name: capi-ec2-control-plane
-  replicas: 3
-  version: v1.25.0
+      name: capi-dev1-control-plane
+  replicas: 1
+  version: v1.26.4
 ---
-apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
 kind: AWSMachineTemplate
 metadata:
-  name: capi-ec2-control-plane
+  name: capi-dev1-control-plane
   namespace: default
 spec:
   template:
     spec:
       iamInstanceProfile: control-plane.cluster-api-provider-aws.sigs.k8s.io
       instanceType: t3.large
-      sshKeyName: capi-ec2
+      sshKeyName: capi-chase1
 ---
 apiVersion: cluster.x-k8s.io/v1beta1
 kind: MachineDeployment
 metadata:
-  name: capi-ec2-md-0
+  name: capi-dev1-md-0
   namespace: default
 spec:
-  clusterName: capi-ec2
-  replicas: 3
+  clusterName: capi-dev1
+  replicas: 1
   selector:
     matchLabels: null
   template:
@@ -86,30 +88,30 @@ spec:
         configRef:
           apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
           kind: KubeadmConfigTemplate
-          name: capi-ec2-md-0
-      clusterName: capi-ec2
+          name: capi-dev1-md-0
+      clusterName: capi-dev1
       infrastructureRef:
-        apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+        apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
         kind: AWSMachineTemplate
-        name: capi-ec2-md-0
-      version: v1.25.0
+        name: capi-dev1-md-0
+      version: v1.26.4
 ---
-apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
 kind: AWSMachineTemplate
 metadata:
-  name: capi-ec2-md-0
+  name: capi-dev1-md-0
   namespace: default
 spec:
   template:
     spec:
       iamInstanceProfile: nodes.cluster-api-provider-aws.sigs.k8s.io
       instanceType: t3.large
-      sshKeyName: capi-ec2
+      sshKeyName: capi-chase1
 ---
 apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
 kind: KubeadmConfigTemplate
 metadata:
-  name: capi-ec2-md-0
+  name: capi-dev1-md-0
   namespace: default
 spec:
   template:
