@@ -1,0 +1,84 @@
+apiVersion: cluster.x-k8s.io/v1beta1
+kind: Cluster
+metadata:
+  name: capi-eksm1
+  namespace: default
+spec:
+  clusterNetwork:
+    pods:
+      cidrBlocks:
+      - 192.168.0.0/16
+  controlPlaneRef:
+    apiVersion: controlplane.cluster.x-k8s.io/v1beta2
+    kind: AWSManagedControlPlane
+    name: capi-eksm1-control-plane
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
+    kind: AWSManagedCluster
+    name: capi-eksm1
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
+kind: AWSManagedCluster
+metadata:
+  name: capi-eksm1
+  namespace: default
+  annotations:
+    argocd.argoproj.io/sync-options: Delete=false
+spec: {}
+---
+apiVersion: controlplane.cluster.x-k8s.io/v1beta2
+kind: AWSManagedControlPlane
+metadata:
+  name: capi-eksm1-control-plane
+  namespace: default
+  annotations:
+    argocd.argoproj.io/sync-options: Delete=false
+spec:
+  region: ap-northeast-1
+  sshKeyName: capi-chase1
+  version: v1.26.4
+  addons:
+    - name: "vpc-cni"
+      version: "v1.12.5-eksbuild.2"
+      conflictResolution: "overwrite"
+    - name: "coredns"
+      version: "v1.9.3-eksbuild.2"
+      conflictResolution: "overwrite"
+    - name: "kube-proxy"
+      version: "v1.26.2-eksbuild.1"
+      conflictResolution: "overwrite"
+    - name: "aws-ebs-csi-driver"
+      version: "v1.18.0-eksbuild.1"
+      conflictResolution: "overwrite"
+---
+apiVersion: cluster.x-k8s.io/v1beta1
+kind: MachinePool
+metadata:
+  name: capi-eksm1-pool-0
+  namespace: default
+  annotations:
+    argocd.argoproj.io/sync-options: Delete=false
+spec:
+  clusterName: capi-eksm1
+  replicas: 2
+  template:
+    spec:
+      bootstrap:
+        dataSecretName: ""
+      clusterName: capi-eksm1
+      infrastructureRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
+        kind: AWSManagedMachinePool
+        name: capi-eksm1-pool-0
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
+kind: AWSManagedMachinePool
+metadata:
+  name: capi-eksm1-pool-0
+  namespace: default
+  annotations:
+    argocd.argoproj.io/sync-options: Delete=false
+spec: 
+  scaling:
+    minSize: 1
+    maxSize: 5
