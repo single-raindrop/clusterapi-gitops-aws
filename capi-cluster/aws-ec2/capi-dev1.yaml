@@ -24,6 +24,8 @@ kind: AWSCluster
 metadata:
   name: capi-dev1
   namespace: default
+  annotations:
+    argocd.argoproj.io/sync-options: Delete=false
 spec:
   region: ap-northeast-1
   sshKeyName: capi-chase1
@@ -35,6 +37,8 @@ kind: KubeadmControlPlane
 metadata:
   name: capi-dev1-control-plane
   namespace: default
+  annotations:
+    argocd.argoproj.io/sync-options: Delete=false
 spec:
   kubeadmConfigSpec:
     clusterConfiguration:
@@ -67,6 +71,8 @@ kind: AWSMachineTemplate
 metadata:
   name: capi-dev1-control-plane
   namespace: default
+  annotations:
+    argocd.argoproj.io/sync-options: Delete=false
 spec:
   template:
     spec:
@@ -79,6 +85,8 @@ kind: MachineDeployment
 metadata:
   name: capi-dev1-md-0
   namespace: default
+  annotations:
+    argocd.argoproj.io/sync-options: Delete=false
 spec:
   clusterName: capi-dev1
   replicas: 1
@@ -103,6 +111,8 @@ kind: AWSMachineTemplate
 metadata:
   name: capi-dev1-md-0
   namespace: default
+  annotations:
+    argocd.argoproj.io/sync-options: Delete=false
 spec:
   template:
     spec:
@@ -115,6 +125,8 @@ kind: KubeadmConfigTemplate
 metadata:
   name: capi-dev1-md-0
   namespace: default
+  annotations:
+    argocd.argoproj.io/sync-options: Delete=false
 spec:
   template:
     spec:
