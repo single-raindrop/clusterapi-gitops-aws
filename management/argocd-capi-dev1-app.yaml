@@ -9,7 +9,7 @@ spec:
     server: 'https://kubernetes.default.svc'
   source:
     path: 'capi-cluster/aws-ec2'
-    repoURL: 'https://github.com/single-raindrop/eks-ec2-clusterapi-gitops.git'
+    repoURL: 'https://github.com/single-raindrop/clusterapi-gitops-aws.git'
     targetRevision: HEAD
     #helm:
      # valueFiles:
@@ -18,5 +18,5 @@ spec:
   syncPolicy:
     automated:
       allowEmpty: true
-      prune: true
+      prune: false
       selfHeal: false
